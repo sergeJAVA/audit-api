@@ -35,36 +35,38 @@ public class AuditMethodSearchServiceImpl implements AuditMethodSearchService {
 
     @Override
     public List<AuditMethod> searchMethods(String query, String level) {
-        Criteria criteria = new Criteria();
-        try {
-            if (StringUtils.hasText(query)) {
-                criteria = criteria.or(new Criteria("methodName").matches(query))
-                        .or(new Criteria("args").matches(query))
-                        .or(new Criteria("result").matches(query));
-            }
-
-            if (StringUtils.hasText(level)) {
-                criteria = criteria.and(new Criteria("logLevel").is(level));
-            }
-
-            if (!StringUtils.hasText(query) && !StringUtils.hasText(level) &&
-                    !StringUtils.hasText(level)){
-                return Collections.emptyList();
-            }
-
-            Query searchQuery = new CriteriaQuery(criteria);
-            SearchHits<AuditMethod> searchHits = elasticsearchOperations.search(searchQuery, AuditMethod.class);
-
-            return searchHits.stream()
-                    .map(SearchHit::getContent)
-                    .collect(Collectors.toList());
-        }catch (Exception e) {
+        if (!StringUtils.hasText(query) && !StringUtils.hasText(level) &&
+                !StringUtils.hasText(level)){
             return Collections.emptyList();
         }
+
+        Criteria criteria = new Criteria();
+
+        if (StringUtils.hasText(query)) {
+            criteria = criteria.or(new Criteria("methodName").matches(query))
+                    .or(new Criteria("args").matches(query))
+                    .or(new Criteria("result").matches(query));
+        }
+
+        if (StringUtils.hasText(level)) {
+            criteria = criteria.and(new Criteria("logLevel").is(level));
+        }
+
+        Query searchQuery = new CriteriaQuery(criteria);
+        SearchHits<AuditMethod> searchHits = elasticsearchOperations.search(searchQuery, AuditMethod.class);
+
+        return searchHits.stream()
+                .map(SearchHit::getContent)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<AuditMethod> findMethodsByFields(String methodName, String level, String eventType) {
+        if (!StringUtils.hasText(methodName) && !StringUtils.hasText(level) &&
+                !StringUtils.hasText(eventType)){
+            return Collections.emptyList();
+        }
+
         Criteria criteria = new Criteria();
 
         if (StringUtils.hasText(methodName)) {
@@ -76,12 +78,7 @@ public class AuditMethodSearchServiceImpl implements AuditMethodSearchService {
         }
 
         if (StringUtils.hasText(eventType)) {
-            criteria = criteria.and(new Criteria("logType").contains(eventType));
-        }
-
-        if (!StringUtils.hasText(methodName) && !StringUtils.hasText(level) &&
-                !StringUtils.hasText(eventType)){
-            return Collections.emptyList();
+            criteria = criteria.and(new Criteria("logType").is(eventType));
         }
 
         Query searchQuery = new CriteriaQuery(criteria);

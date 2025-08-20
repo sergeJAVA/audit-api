@@ -1,5 +1,6 @@
 package com.webbee.audit_api.document;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.webbee.audit_api.util.Indices;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +25,7 @@ public class AuditRequest {
     @Id
     private String id;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     @Field(type = FieldType.Date, format = {}, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private LocalDateTime timestamp;
 
@@ -34,7 +38,10 @@ public class AuditRequest {
     @Field(type = FieldType.Keyword)
     private String statusCode;
 
-    @Field(type = FieldType.Text)
+    @MultiField(
+            mainField = @Field(type = FieldType.Text),
+            otherFields = { @InnerField(suffix = "keyword", type = FieldType.Keyword) }
+    )
     private String path;
 
     @Field(type = FieldType.Text)
