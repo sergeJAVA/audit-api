@@ -3,6 +3,8 @@ package com.webbee.audit_api.service.impl;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsAggregate;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import com.webbee.audit_api.document.AuditMethod;
 import com.webbee.audit_api.service.AuditMethodSearchService;
 import lombok.RequiredArgsConstructor;
@@ -40,19 +42,27 @@ public class AuditMethodSearchServiceImpl implements AuditMethodSearchService {
             return Collections.emptyList();
         }
 
-        Criteria criteria = new Criteria();
+        BoolQuery.Builder boolQuery = QueryBuilders.bool();
 
         if (StringUtils.hasText(query)) {
-            criteria = criteria.or(new Criteria("methodName").matches(query))
-                    .or(new Criteria("args").matches(query))
-                    .or(new Criteria("result").matches(query));
+            boolQuery.must(q -> q
+                    .multiMatch(m -> m
+                            .query(query)
+                            .fields("methodName", "args", "result")
+                    )
+            );
         }
 
         if (StringUtils.hasText(level)) {
-            criteria = criteria.and(new Criteria("logLevel").is(level));
+            boolQuery.must(q -> q
+                    .term(t -> t
+                            .field("logLevel")
+                            .value(level)
+                    )
+            );
         }
 
-        Query searchQuery = new CriteriaQuery(criteria);
+        Query searchQuery = new NativeQuery(boolQuery.build()._toQuery());
         SearchHits<AuditMethod> searchHits = elasticsearchOperations.search(searchQuery, AuditMethod.class);
 
         return searchHits.stream()

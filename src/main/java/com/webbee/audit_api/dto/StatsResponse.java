@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import java.util.Map;
 
+/**
+ * DTO для вывода результата полученной статистики
+ */
 @Getter
 @Setter
 @AllArgsConstructor

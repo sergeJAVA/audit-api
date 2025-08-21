@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * DTO для вывода результата поиска документов {@code AuditMethod}
+ */
 @Getter
 @Setter
 @AllArgsConstructor
