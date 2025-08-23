@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.InnerField;
-import org.springframework.data.elasticsearch.annotations.MultiField;
+import org.springframework.data.elasticsearch.annotations.Mapping;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
 import java.time.LocalDateTime;
 
@@ -20,34 +18,26 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(indexName = Indices.AUDIT_REQUEST_INDEX)
+@Mapping(mappingPath = "/mappings/audit_request_mapping.json")
+@Setting(settingPath = "/settings/audit_request_settings.json")
 public class AuditRequest {
 
     @Id
     private String id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    @Field(type = FieldType.Date, format = {}, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private LocalDateTime timestamp;
 
-    @Field(type = FieldType.Keyword)
     private String requestType;
 
-    @Field(type = FieldType.Keyword)
     private String method;
 
-    @Field(type = FieldType.Keyword)
     private String statusCode;
 
-    @MultiField(
-            mainField = @Field(type = FieldType.Text),
-            otherFields = { @InnerField(suffix = "keyword", type = FieldType.Keyword) }
-    )
     private String path;
 
-    @Field(type = FieldType.Text)
     private String requestBody;
 
-    @Field(type = FieldType.Text)
     private String responseBody;
 
 }

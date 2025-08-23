@@ -14,5 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class MethodSearchResponse {
+
     private List<AuditMethod> results;
+
 }

@@ -38,7 +38,7 @@ public class AuditMethodSearchServiceImpl implements AuditMethodSearchService {
     @Override
     public List<AuditMethod> searchMethods(String query, String level) {
         if (!StringUtils.hasText(query) && !StringUtils.hasText(level) &&
-                !StringUtils.hasText(level)){
+                !StringUtils.hasText(level)) {
             return Collections.emptyList();
         }
 
@@ -73,7 +73,7 @@ public class AuditMethodSearchServiceImpl implements AuditMethodSearchService {
     @Override
     public List<AuditMethod> findMethodsByFields(String methodName, String level, String eventType) {
         if (!StringUtils.hasText(methodName) && !StringUtils.hasText(level) &&
-                !StringUtils.hasText(eventType)){
+                !StringUtils.hasText(eventType)) {
             return Collections.emptyList();
         }
 
@@ -136,28 +136,40 @@ public class AuditMethodSearchServiceImpl implements AuditMethodSearchService {
     private void addLocalDateTimes(NativeQueryBuilder queryBuilder, LocalDateTime from, LocalDateTime to) {
         queryBuilder.withQuery(q -> q.range(r -> r.date(d -> {
             d.field("timestamp");
-            if (from != null) d.gte(from.format(DATE_TIME_FORMATTER));
-            if (to != null)  d.lte(to.format(DATE_TIME_FORMATTER));
+            if (from != null) {
+                d.gte(from.format(DATE_TIME_FORMATTER));
+            }
+            if (to != null) {
+                d.lte(to.format(DATE_TIME_FORMATTER));
+            }
             return d;
         })));
     }
 
     private StringTermsAggregate getTerms(SearchHits<AuditMethod> searchHits) {
         AggregationsContainer<?> container = searchHits.getAggregations();
-        if (container == null) return null;
+        if (container == null) {
+            return null;
+        }
 
         List<ElasticsearchAggregation> aggs = (List<ElasticsearchAggregation>) container.aggregations();
-        if (aggs == null || aggs.isEmpty()) return null;
+        if (aggs == null || aggs.isEmpty()) {
+            return null;
+        }
 
         ElasticsearchAggregation statsAgg = aggs.stream()
                 .filter(a -> "stats_agg".equals(a.aggregation().getName()))
                 .findFirst()
                 .orElse(null);
 
-        if (statsAgg == null) return null;
+        if (statsAgg == null) {
+            return null;
+        }
 
         StringTermsAggregate terms = statsAgg.aggregation().getAggregate().sterms();
-        if (terms == null) return null;
+        if (terms == null) {
+            return null;
+        }
 
         return terms;
     }
@@ -167,7 +179,9 @@ public class AuditMethodSearchServiceImpl implements AuditMethodSearchService {
             return "methodName.keyword";
         } else if (groupBy.equals("level")) {
             return "logLevel";
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
 }

@@ -1,0 +1,37 @@
+{
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "timestamp": {
+      "type": "date",
+      "format": "yyyy-MM-dd HH:mm:ss.SSS||epoch_millis"
+    },
+    "requestType": {
+      "type": "keyword"
+    },
+    "method": {
+      "type": "keyword"
+    },
+    "statusCode": {
+      "type": "keyword"
+    },
+    "path": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      },
+      "analyzer": "standard"
+    },
+    "requestBody": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "responseBody": {
+      "type": "text",
+      "analyzer": "standard"
+    }
+  }
+}

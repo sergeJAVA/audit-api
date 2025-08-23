@@ -13,5 +13,7 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 public class StatsResponse {
+
     private Map<String, Long> stats;
+
 }

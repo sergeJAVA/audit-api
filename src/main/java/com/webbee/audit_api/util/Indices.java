@@ -3,7 +3,7 @@ package com.webbee.audit_api.util;
 /**
  * Класс для хранения имен индексов Elasticsearch.
  */
-public class Indices {
+public final class Indices {
 
     private Indices() {}
 

@@ -165,20 +165,28 @@ public class AuditRequestSearchServiceImpl implements AuditRequestSearchService 
 
     private StringTermsAggregate getTerms(SearchHits<AuditRequest> searchHits) {
         AggregationsContainer<?> container = searchHits.getAggregations();
-        if (container == null) return null;
+        if (container == null) {
+            return null;
+        }
 
         List<ElasticsearchAggregation> aggs = (List<ElasticsearchAggregation>) container.aggregations();
-        if (aggs == null || aggs.isEmpty()) return null;
+        if (aggs == null || aggs.isEmpty()) {
+            return null;
+        }
 
         ElasticsearchAggregation statsAgg = aggs.stream()
                 .filter(a -> "stats_agg".equals(a.aggregation().getName()))
                 .findFirst()
                 .orElse(null);
 
-        if (statsAgg == null) return null;
+        if (statsAgg == null) {
+            return null;
+        }
 
         StringTermsAggregate terms = statsAgg.aggregation().getAggregate().sterms();
-        if (terms == null) return null;
+        if (terms == null) {
+            return null;
+        }
 
         return terms;
     }
