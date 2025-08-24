@@ -1,0 +1,10 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: audit-api
+
+elasticsearch:
+  username: elastic
+  password: 0=TqZL3DFaqRCizD=39e

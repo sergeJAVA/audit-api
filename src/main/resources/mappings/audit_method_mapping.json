@@ -1,0 +1,44 @@
+{
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "timestamp": {
+      "type": "date",
+      "format": "yyyy-MM-dd HH:mm:ss.SSS||epoch_millis"
+    },
+    "logLevel": {
+      "type": "keyword"
+    },
+    "correlationId": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "methodName": {
+      "type": "text",
+      "analyzer": "standard",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    },
+    "args": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "logType": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "result": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "exceptionMessage": {
+      "type": "text",
+      "analyzer": "standard"
+    }
+  }
+
+}
